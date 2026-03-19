@@ -1,0 +1,27 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+    
+  cloud:
+    gateway:
+      routes:
+        - id: PATIENT-SERVICE
+          uri: lb://PATIENT-SERVICE
+          predicates:
+            - Path=/patients/**
+          filters:
+            - StripPrefix=1  # This removes '/patients' from the URL before forwarding. No context path for downstream services.
+          
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
