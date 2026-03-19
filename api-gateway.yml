@@ -8,7 +8,15 @@ spring:
         - id: patient-service
           uri: lb://PATIENT-SERVICE
           predicates:
-            - Path=/patients/**
+            - name: Path
+              args:
+                pattern: /patients/**
+          filters:
+            - name: RewritePath
+              args:
+                regexp: /patients/(?<segment>.*)
+                replacement: /$\{segment}
+
 eureka:
   client:
     service-url:
