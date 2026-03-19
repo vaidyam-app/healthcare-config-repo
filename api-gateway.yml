@@ -4,6 +4,9 @@ server:
 spring:
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
       routes:
         - id: patient-service
           uri: lb://PATIENT-SERVICE
