@@ -7,13 +7,22 @@ spring:
     
   cloud:
     gateway:
+      default-filters:
+        - StripPrefix=1 # This removes first prefix in the path from the URL before forwarding. No context path for downstream services.
       routes:
-        - id: PATIENT-SERVICE
+        - id: patient-service
           uri: lb://PATIENT-SERVICE
           predicates:
             - Path=/patients/**
-          filters:
-            - StripPrefix=1  # This removes '/patients' from the URL before forwarding. No context path for downstream services.
+        - id: doctor-service
+          uri: lb://DOCTOR-SERVICE
+          predicates:
+            - Path=/doctors/**
+        - id: appointment-service
+          uri: lb://APPOINTMENT-SERVICE
+          predicates:
+            - Path=/appointments/**
+          
           
 eureka:
   client:
@@ -24,4 +33,8 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        include: health, metrics
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId}] %-5level %logger - %msg%n"
